@@ -4,19 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bytes_t fixed_xor(const unsigned char* a, size_t a_len, const unsigned char* b, size_t b_len) {
-    if (a_len != b_len)
-        return NO_BYTES;
-
-    const bytes_t out = { .bytes = malloc(a_len), .len = a_len };
-
-    for (size_t i = 0; i < a_len; i++) {
-        out.bytes[i] = a[i] ^ b[i];
-    }
-
-    return out;
-}
-
 char* fixed_xor_hex(const char* a_hex, const char* b_hex) {
     const size_t a_len = strlen(a_hex);
     const size_t b_len = strlen(b_hex);
@@ -43,4 +30,17 @@ char* fixed_xor_hex(const char* a_hex, const char* b_hex) {
     free(xor.bytes);
 
     return out_hex;
+}
+
+bytes_t fixed_xor(const unsigned char* a, size_t a_len, const unsigned char* b, size_t b_len) {
+    if (a_len != b_len)
+        return NO_BYTES;
+
+    const bytes_t out = { .bytes = malloc(a_len), .len = a_len };
+
+    for (size_t i = 0; i < a_len; i++) {
+        out.bytes[i] = a[i] ^ b[i];
+    }
+
+    return out;
 }

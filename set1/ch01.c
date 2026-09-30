@@ -26,6 +26,22 @@ static char ascii_hex(const uint8_t c) {
     return 0x0;
 }
 
+char* hex(const unsigned char* bytes, size_t bytes_len) {
+    if (bytes_len == 0) return NULL;
+    const size_t hex_len = bytes_len * 2;
+
+    char* buf = malloc(hex_len + 1);
+
+    for (size_t i = 0; i < bytes_len; i++) {
+        const char msb = ascii_hex(bytes[i] >> 4);
+        const char lsb = ascii_hex(bytes[i] & 0x0F);
+        buf[i * 2] = msb;
+        buf[i * 2 + 1] = lsb;
+    }
+    buf[hex_len] = '\0';
+    return buf;
+}
+
 /** @return The raw bytes of a hex-encoded C-string
  *  @attention Returns a newly allocated buffer
  */
@@ -53,22 +69,6 @@ bytes_t unhex(const char* hex) {
         .bytes = buf,
         .len = buf_len
     };
-}
-
-char* hex(const unsigned char* bytes, size_t bytes_len) {
-    if (bytes_len == 0) return NULL;
-    const size_t hex_len = bytes_len * 2;
-
-    char* buf = malloc(hex_len + 1);
-
-    for (size_t i = 0; i < bytes_len; i++) {
-        const char msb = ascii_hex(bytes[i] >> 4);
-        const char lsb = ascii_hex(bytes[i] & 0x0F);
-        buf[i * 2] = msb;
-        buf[i * 2 + 1] = lsb;
-    }
-    buf[hex_len] = '\0';
-    return buf;
 }
 
 
