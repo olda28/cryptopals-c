@@ -1,5 +1,8 @@
+*
+!/**/
 !*.*
-lib
-bin
-build
+lib/
+bin/
+build/*
 current.c
+*.o
