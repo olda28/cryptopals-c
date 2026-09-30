@@ -4,18 +4,16 @@
 
 typedef struct {
     unsigned char* bytes;
-    size_t len; 
+    size_t len;
 } bytes_t;
+
 #define NO_BYTES ((bytes_t){ NULL, 0 })
 
-/* Converts a NUL-terminated hex string to raw bytes.
- * Returns a newly allocated buffer.
- * If strlen(hex) is not even or 0, returns NULL */
+char* hex(const unsigned char* bytes, size_t bytes_len);
 bytes_t unhex(const char* hex);
 
-/* Converts a raw byte array to base64 encoded C-string.
- * Returns a newly allocated buffer.
- * If bytes_len is 0, returns NULL */
 char* base64(const unsigned char* bytes, size_t bytes_len);
+bytes_t unbase64(const char* base);
+
 
 #endif

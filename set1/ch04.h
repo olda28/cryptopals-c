@@ -8,6 +8,7 @@ typedef struct {
     crack_result_hex_t cracked;
     int line;
 } crack_match_hex_t;
+
 #define NO_MATCH (crack_match_hex_t){ CRACK_FAIL_HEX, 0 }
 
 /* Attempts to find a single-byte-xor-crackable line in a file.

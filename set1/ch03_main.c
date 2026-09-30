@@ -4,7 +4,8 @@
 
 static const char ch_in[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
 static const char ch_out[] = "Cooking MC's like a pound of bacon";
-int main(int argc, char** argv){
+
+int main(int argc, char** argv) {
     const char* hex;
     if (argc < 2)
         hex = ch_in;
@@ -20,7 +21,7 @@ int main(int argc, char** argv){
     printf("   key: 0x%02x\n", cracked.key);
     printf(" score: %f\n", cracked.score);
     printf("   out: %s\n", cracked.bytes);
-    
+
     if (argc < 2)
         printf("expect: %s\n", ch_out);
 

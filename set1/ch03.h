@@ -19,6 +19,7 @@ typedef struct {
     unsigned char key;
     double score;
 } crack_result_t;
+
 #define CRACK_FAIL (crack_result_t){ NULL, 0, 0x00, -1.0 }
 
 typedef struct {
@@ -26,6 +27,7 @@ typedef struct {
     unsigned char key;
     double score;
 } crack_result_hex_t;
+
 #define CRACK_FAIL_HEX (crack_result_hex_t){ NULL, 0x00, -1.0 }
 
 crack_result_t single_xor_crack(const unsigned char* in, size_t in_len);
