@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static const char* ch_filename = "./ch04-data.txt";
+static const char* ch_filename = "./set1/ch04-data.txt";
 static const size_t ch_max_line_len = 60;
 static const char* ch_out = "Now that the party is jumping\n";
 
