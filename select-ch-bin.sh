@@ -1,4 +1,2 @@
 #!/bin/bash
-
-cd bin
-ln -sfn $1 ./current
+cd ./bin && ln -sfn "./$1" ./current
