@@ -1,8 +1,9 @@
-//
-// Created by olda on 9/30/26.
-//
+#ifndef CH05_H
+#define CH05_H
+#include <stddef.h>
 
-#ifndef CRYPTOPALS_CH05_H
-#define CRYPTOPALS_CH05_H
+#include "ch01.h"
 
-#endif //CRYPTOPALS_CH05_H
+bytes_t repeat_xor(const unsigned char* in, size_t in_len, const unsigned char* key, size_t key_len);
+
+#endif
