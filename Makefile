@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Wmaybe-uninitialized -std=c99 -g -O3
+CFLAGS = -Wall -Wextra -std=c99 -g
 
 BUILD = build
 BIN = bin
