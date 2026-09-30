@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <float.h>
 #include <stddef.h>
 #include <math.h>
 
@@ -817,16 +818,14 @@ crack_result_t single_xor_crack(const unsigned char* in, size_t in_len) {
         .bytes = NULL,
         .len = in_len,
         .key = 0x00,
-        .score = 900.0 // English text is close to 120
+        .score = DBL_MAX // English text is close to 120
     };
 
     for (unsigned int i = 0x00; i <= 0xff; i++) {
         const bytes_t candidate = single_xor(in, in_len, i);
 
         const double chi = chi_score(candidate.bytes, candidate.len);
-        const double bigram = bigram_score(candidate.bytes, candidate.len);
-
-        const double score = chi + bigram;
+        const double score = chi;
 
         if (score < solution.score) {
             if (solution.bytes) free(solution.bytes);
