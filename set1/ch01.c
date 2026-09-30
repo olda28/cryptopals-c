@@ -56,6 +56,7 @@ bytes_t unhex(const char* hex) {
 }
 
 char* hex(const unsigned char* bytes, size_t bytes_len) {
+    if (bytes_len == 0) return NULL;
     const size_t hex_len = bytes_len * 2;
 
     char* buf = malloc(hex_len + 1);
@@ -66,6 +67,7 @@ char* hex(const unsigned char* bytes, size_t bytes_len) {
         buf[i * 2] = msb;
         buf[i * 2 + 1] = lsb;
     }
+    buf[hex_len] = '\0';
     return buf;
 }
 
@@ -92,7 +94,7 @@ out = carry << 0 | 0 >> 8
 carry = 0 & (255 >> 2)
 
 ================================ */
-__attribute_nonstring__ static const char base64_alpha[64] =
+static const char base64_alpha[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 /** @return Base64 encoded C-string
  *  @attention Returns a newly allocated buffer
@@ -133,8 +135,9 @@ char* base64(const unsigned char* bytes, size_t bytes_len) {
     for (size_t i = 0; i < padding_len; i++) {
         base[unpadded_len + i] = '=';
     }
-
     base[base_len] = '\0';
+
+    free(decoded);
     return base;
 }
 
