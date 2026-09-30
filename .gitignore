@@ -1,0 +1,8 @@
+*
+!*/
+!*.*
+lib/
+bin/
+build/
+current.c
+.idea
