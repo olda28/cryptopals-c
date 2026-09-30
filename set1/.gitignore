@@ -1,8 +1,0 @@
-*
-!/**/
-!*.*
-lib/
-bin/
-build/*
-current.c
-*.o
