@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    crack_match_hex_t match = find_single_xor_hex(file, 60);
+    const crack_match_hex_t match = find_single_xor_hex(file, 60);
     fclose(file);
     if (!match.cracked.bytes) {
         return 1;
