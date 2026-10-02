@@ -152,7 +152,6 @@ char* base64(const unsigned char* bytes, size_t bytes_len) {
 
 bytes_t unbase64(const char* base) {
     const size_t base_len = strlen(base);
-    if (base_len == 0) return NO_BYTES;
     bytes_t out = {
         .bytes = malloc(base_len),
         .len = 0
@@ -184,4 +183,42 @@ bytes_t unbase64(const char* base) {
     out.len = w - out.bytes;
 
     return out;
+}
+
+/* Falls back to hex if nonprintable bytes are found */
+static const char try_ascii_fail_prefix[] = "(hex) ";
+static const size_t try_ascii_fail_len = strlen(try_ascii_fail_prefix);
+
+char* try_ascii(const unsigned char* in, size_t in_len) {
+    if (in_len == 0) return NULL;
+    char* ascii = malloc(in_len + 1);
+    for (size_t i = 0; i < in_len; i++) {
+        if (isprint(in[i]) || isspace(in[i])) ascii[i] = (char)in[i];
+        else goto fail;
+    }
+    ascii[in_len] = '\0';
+    return ascii;
+
+fail:
+    free(ascii);
+    char* in_hex = hex(in, in_len);
+    if (!in_hex) return NULL;
+    ascii = malloc(try_ascii_fail_len + in_len * 2 + 1);
+    memcpy(ascii, try_ascii_fail_prefix, try_ascii_fail_len); // copy (hex) prefix
+    memcpy(ascii + try_ascii_fail_len, in_hex, in_len * 2); // copy hex
+    ascii[try_ascii_fail_len + in_len * 2] = '\0'; // NUL byte
+    free(in_hex); // free unused hex
+    return ascii;
+}
+
+bytes_t decode(const char* in, ENCODING encoding) {
+    switch (encoding) {
+    case NONE:
+        return (bytes_t){ .bytes = (unsigned char*)in, .len = strlen(in) };
+    case BASE64:
+        return unbase64(in);
+    case HEX:
+        return unhex(in);
+    }
+    return NO_BYTES;
 }

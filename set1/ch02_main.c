@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "ch02.h"
@@ -7,29 +8,27 @@ static const char ch_b[] = "686974207468652062756c6c277320657965";
 static const char ch_out[] = "746865206b696420646f6e277420706c6179";
 
 int main(int argc, char** argv) {
-    const char* a;
-    const char* b;
+    const bool noargs = argc < 3;
+    const char* a = noargs ? ch_a : argv[1];
+    const char* b = noargs ? ch_b : argv[2];
 
-    if (argc < 3) {
-        a = ch_a;
-        b = ch_b;
-    }
-    else {
-        a = argv[1];
-        b = argv[2];
-    }
+    bytes_t a_raw = unhex(a);
+    bytes_t b_raw = unhex(b);
 
-    char* out = fixed_xor_hex(a, b);
-    if (!out)
-        return 1;
+    const bytes_t out = fixed_xor(a_raw.bytes, a_raw.len, b_raw.bytes, b_raw.len);
+
+    char* out_hex = hex(out.bytes, out.len);
+    if (!out_hex) goto cleanup;
 
     printf("  a: %s\n", a);
     printf("  b: %s\n", b);
-    printf("out: %s\n", out);
-    if (argc < 3) {
-        printf("exp: %s\n", ch_out);
-    }
+    printf("out: %s\n", out_hex);
+    if (noargs) printf("exp: %s\n", ch_out);
 
-    free(out);
-    return 0;
+    cleanup:
+    free(a_raw.bytes);
+    free(b_raw.bytes);
+    free(out.bytes);
+    free(out_hex);
+    return out_hex ? 0 : 1;
 }

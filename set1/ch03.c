@@ -814,6 +814,7 @@ bytes_t single_xor(const unsigned char* in, size_t in_len, const unsigned char k
 
 
 crack_result_t single_xor_crack(const unsigned char* in, size_t in_len) {
+    if (in_len == 0) return CRACK_FAIL;
     crack_result_t solution = {
         .bytes = NULL,
         .len = in_len,
@@ -842,20 +843,4 @@ crack_result_t single_xor_crack(const unsigned char* in, size_t in_len) {
     }
 
     return solution.score == 900.0 ? CRACK_FAIL : solution;
-}
-
-crack_result_hex_t single_xor_crack_hex(const char* hex) {
-    const bytes_t raw = unhex(hex);
-    if (!raw.bytes)
-        return CRACK_FAIL_HEX;
-
-    const crack_result_t cracked = single_xor_crack(raw.bytes, raw.len);
-    free(raw.bytes);
-    if (!cracked.bytes)
-        return CRACK_FAIL_HEX;
-
-    char* out = realloc(cracked.bytes, cracked.len + 1);
-    out[cracked.len] = '\0';
-
-    return (crack_result_hex_t){ .bytes = out, .key = cracked.key, .score = cracked.score };
 }
