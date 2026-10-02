@@ -27,6 +27,7 @@ typedef struct {
     int line;
 } crack_match_t;
 #define NO_MATCH (crack_match_t){ CRACK_FAIL, 0 }
+void free_crack_match(crack_match_t* crack_match);
 
 file_bytes_t read_file(FILE* file, READFILE_NEWLINE newlines, ENCODING encoding);
 bool decode_nextline(file_bytes_t* f);

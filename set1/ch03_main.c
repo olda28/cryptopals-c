@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     if (noargs) printf("expect: %s\n", ch_out);
 
     free_bytes(&in_raw);
-    free(cracked.bytes);
+    free_crack_result(&cracked);
     free(out_ascii);
 
     return 0;

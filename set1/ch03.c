@@ -8,6 +8,12 @@
 #include <stddef.h>
 #include <math.h>
 
+void free_crack_result(crack_result_t* crack_result) {
+    free(crack_result->bytes);
+    crack_result->bytes = NULL;
+    crack_result->len = 0;
+}
+
 static const double bigram_freq[26][26] = {
     {
         0.00003,
@@ -738,9 +744,7 @@ static const double bigram_freq[26][26] = {
         0.00003
     }
 };
-
 static const double bigram_low = -11.51293;
-
 static double bigram_score(const unsigned char* in, size_t in_len) {
     double score = 0.0;
     for (size_t i = 0; i < in_len - 1; i++) {
@@ -786,7 +790,6 @@ static const double english_freq[] = {
     0.0006142,
     0.18
 };
-
 static double chi_score(const unsigned char* in, size_t in_len) {
     double score = 0.0;
     for (size_t i = 0; i < in_len; i++) {

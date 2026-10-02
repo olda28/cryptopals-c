@@ -4,12 +4,21 @@
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "ch01.h"
 #include "ch03.h"
 #include "ch05.h"
+
+void free_repeat_crack_result_t(repeat_crack_result_t* repeat_crack_result) {
+    free(repeat_crack_result->bytes);
+    repeat_crack_result->bytes = NULL;
+    repeat_crack_result->len = 0;
+    free(repeat_crack_result->key);
+    repeat_crack_result->key = NULL;
+    repeat_crack_result->key_len = 0;
+}
+
 
 static int bitcount(const uint8_t x) {
     int count = 0;

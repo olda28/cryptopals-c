@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Error: file '%s' not found.\n", filename);
         return 1;
     }
-    const crack_match_t match = find_single_xor(file, HEX);
+    crack_match_t match = find_single_xor(file, HEX);
     fclose(file);
 
     char* out_ascii = try_ascii(match.cracked.bytes, match.cracked.len);
@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     printf("   out: %s\n", out_ascii ? out_ascii : "");
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free(match.cracked.bytes);
+    free_crack_match(&match);
     free(out_ascii);
 
     return 0;

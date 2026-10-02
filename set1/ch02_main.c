@@ -18,14 +18,12 @@ int main(int argc, char** argv) {
     bytes_t out = fixed_xor(a_raw.bytes, a_raw.len, b_raw.bytes, b_raw.len);
 
     char* out_hex = hex(out.bytes, out.len);
-    if (!out_hex) goto cleanup;
 
     printf("  a: %s\n", a);
     printf("  b: %s\n", b);
     printf("out: %s\n", out_hex);
     if (noargs) printf("exp: %s\n", ch_out);
 
-    cleanup:
     free_bytes(&a_raw);
     free_bytes(&b_raw);
     free_bytes(&out);

@@ -23,20 +23,19 @@ int main(int argc, char** argv) {
     file_bytes_t f = read_file(file, NEWLINE_STRIP, BASE64);
     decode_full(&f);
 
-    const repeat_crack_result_t crack = repeat_xor_crack(f.decoded.bytes, f.decoded.len);
+    repeat_crack_result_t crack = repeat_xor_crack(f.decoded.bytes, f.decoded.len);
 
     char* key_ascii = try_ascii(crack.key, crack.key_len);
     char* out_ascii = try_ascii(crack.bytes, crack.len);
     fprintf(stderr, "    in: (%s)\n", filename);
     fprintf(stderr, "   key: %s\n", key_ascii);
-    fprintf(stderr, "   out: %s\n", piped ? "(pipe)" : out_ascii);
-    fprintf(stderr, "expect: %s\n", ch_out);
+    fprintf(stderr, "   out: %s", piped ? "(pipe)\n" : "");
     printf("%s", out_ascii);
+    fprintf(stderr, "expect: %s\n", ch_out);
 
     fclose(file);
     close_file(&f);
-    free(crack.bytes);
-    free(crack.key);
+    free_repeat_crack_result_t(&crack);
     free(key_ascii);
     free(out_ascii);
     return 0;

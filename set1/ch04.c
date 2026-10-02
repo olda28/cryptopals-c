@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "ch03.h"
 
+void free_crack_match(crack_match_t* crack_match) {
+    free_crack_result(&crack_match->cracked);
+}
 
 /**
  * Read a file, treating newlines as specified, with a given encoding.
@@ -38,14 +41,6 @@ file_bytes_t read_file(FILE* file, READFILE_NEWLINE newlines, ENCODING encoding)
 }
 
 /**
- * Return the full decoded buffer of a read file.
- * @warning f.decoded must be freed.
- */
-void decode_full(file_bytes_t* f) {
-    f->decoded = decode(f->bytes_start, f->encoding);
-}
-
-/**
  *
  * Return the next decoded line of a read file.
  * @param f pointer to file_bytes returned by read_file(..., NEWLINE_REPLACE_NUL, ...)
@@ -58,6 +53,14 @@ bool decode_nextline(file_bytes_t* f) {
     f->bytes += strlen(f->bytes) + 1;
     f->decoded = decode(to_return, f->encoding);
     return f->decoded.len > 0;
+}
+
+/**
+ * Return the full decoded buffer of a read file.
+ * @warning f.decoded must be freed.
+ */
+void decode_full(file_bytes_t* f) {
+    f->decoded = decode(f->bytes_start, f->encoding);
 }
 
 void close_file(file_bytes_t* f) {
@@ -99,7 +102,7 @@ crack_match_t find_single_xor(FILE* file, ENCODING file_encoding) {
         free(f.decoded.bytes);
     }
 
-    clean:
+clean:
     free(f.bytes_start);
     return solution;
 }

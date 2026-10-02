@@ -11,6 +11,7 @@ typedef struct {
     double score;
 } crack_result_t;
 #define CRACK_FAIL (crack_result_t){ NULL, 0, 0x00, -1.0 }
+void free_crack_result(crack_result_t* crack_result);
 
 bytes_t single_xor(const unsigned char* in, size_t in_len, unsigned char key);
 crack_result_t single_xor_crack(const unsigned char* in, size_t in_len);
