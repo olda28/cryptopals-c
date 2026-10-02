@@ -4,33 +4,18 @@
 #include <stdio.h>
 
 static const char* ch_filename = "./set1/ch04-data.txt";
-static const size_t ch_max_line_len = 60;
 static const char* ch_out = "Now that the party is jumping\n";
 
 int main(int argc, char** argv) {
-    const char* filename;
-    size_t max_line_len;
-    if (argc < 3) {
-        filename = ch_filename;
-        max_line_len = ch_max_line_len;
-    }
-    else {
-        filename = argv[1];
-        max_line_len = atoi(argv[2]);
-    }
-
-    if (max_line_len == 0) {
-        fprintf(stderr, "Error: invalid max line length '%ld'  was provided.\n", max_line_len);
-        return 1;
-    }
+    const bool noargs = argc < 3;
+    const char* filename = noargs ? ch_filename : argv[1];
 
     FILE* file = fopen(filename, "r");
     if (!file) {
         fprintf(stderr, "Error: file '%s' not found.\n", filename);
         return 1;
     }
-
-    const crack_match_hex_t match = find_single_xor_hex(file, 60);
+    const crack_match_t match = find_single_xor(file, HEX);
     fclose(file);
 
     char* out_ascii = try_ascii(match.cracked.bytes, match.cracked.len);
