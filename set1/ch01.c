@@ -2,10 +2,15 @@
 
 #include <ctype.h>
 #include <math.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
+void free_bytes(bytes_t* f) {
+    free(f->bytes);
+    f->bytes = NULL;
+    f->len = 0;
+}
 
 /** @return Integer value of an ASCII hex byte */
 static int deascii_hex(const char c) {
@@ -42,9 +47,6 @@ char* hex(const unsigned char* bytes, size_t bytes_len) {
     return buf;
 }
 
-/** @return The raw bytes of a hex-encoded C-string
- *  @attention Returns a newly allocated buffer
- */
 bytes_t unhex(const char* hex) {
     const size_t hex_len = strlen(hex);
     if (hex_len % 2 != 0 || hex_len == 0)

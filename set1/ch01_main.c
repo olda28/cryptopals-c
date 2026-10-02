@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     printf("   out: %s\n", base);
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free(raw.bytes);
+    free_bytes(&raw);
     free(base);
 
     return 0;
