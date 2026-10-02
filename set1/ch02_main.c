@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     bytes_t a_raw = unhex(a);
     bytes_t b_raw = unhex(b);
 
-    const bytes_t out = fixed_xor(a_raw.bytes, a_raw.len, b_raw.bytes, b_raw.len);
+    bytes_t out = fixed_xor(a_raw.bytes, a_raw.len, b_raw.bytes, b_raw.len);
 
     char* out_hex = hex(out.bytes, out.len);
     if (!out_hex) goto cleanup;
@@ -26,9 +26,9 @@ int main(int argc, char** argv) {
     if (noargs) printf("exp: %s\n", ch_out);
 
     cleanup:
-    free(a_raw.bytes);
-    free(b_raw.bytes);
-    free(out.bytes);
+    free_bytes(&a_raw);
+    free_bytes(&b_raw);
+    free_bytes(&out);
     free(out_hex);
     return out_hex ? 0 : 1;
 }

@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     printf("   out: %s\n", out_ascii ? out_ascii : "");
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free(in_raw.bytes);
+    free_bytes(&in_raw);
     free(cracked.bytes);
     free(out_ascii);
 

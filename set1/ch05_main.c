@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     const char* key = noargs ? ch_key : argv[1];
     const char* in = noargs ? ch_in : argv[2];
 
-    const bytes_t xor = repeat_xor((unsigned char*)in, strlen(in), (unsigned char*)key, strlen(key));
+    bytes_t xor = repeat_xor((unsigned char*)in, strlen(in), (unsigned char*)key, strlen(key));
 
     char* hexx = hex(xor.bytes, xor.len);
     printf("    in: %s\n", in);
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     printf("   out: %s\n", hexx);
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free(xor.bytes);
+    free_bytes(&xor);
     free(hexx);
     return 0;
 }
