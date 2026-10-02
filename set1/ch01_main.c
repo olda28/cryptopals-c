@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "ch01.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,32 +9,15 @@ static const char ch_in[] =
 static const char ch_out[] = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
 
 int main(int argc, char** argv) {
-    const char* hex;
-    if (argc < 2)
-        hex = ch_in;
-    else
-        hex = argv[1];
-    printf("    in: %s\n", hex);
+    const bool noargs = argc < 2;
+    const char* hex = noargs ? ch_in : argv[1];
 
-    const bytes_t raw = unhex(hex);
-    if (!raw.bytes)
-        return 1;
-
-    printf("   raw: ");
-    for (size_t i = 0; i < raw.len; i++) {
-        printf("0x%02x ", raw.bytes[i]);
-    }
-    printf("\n");
-
+    bytes_t raw = unhex(hex);
     char* base = base64(raw.bytes, raw.len);
-    if (!base) {
-        free(raw.bytes);
-        return 1;
-    }
 
-    printf("base64: %s\n", base);
-    if (argc < 2)
-        printf("expect: %s\n", ch_out);
+    printf("    in: %s\n", hex);
+    printf("   out: %s\n", base);
+    if (noargs) printf("expect: %s\n", ch_out);
 
     free(raw.bytes);
     free(base);
