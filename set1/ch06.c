@@ -49,13 +49,13 @@ static int find_keylen(const unsigned char* in, int min, int max) {
             best_kd = kd_normal;
             best_keylen = keylen;
         }
-        printf("keysize: %d, distance: %f\n", keylen, kd_normal);
         keylen++;
     }
     return best_keylen;
 }
 
 repeat_crack_result_t repeat_xor_crack(unsigned char* in, size_t in_len) {
+    if (in_len == 0) return REPEAT_CRACK_FAIL;
     const int MAX_KEYLEN = (int)fmin(40, (double)in_len / 4); // we need at least four keysize blocks
     const int keylen = find_keylen(in, 2, MAX_KEYLEN);
 

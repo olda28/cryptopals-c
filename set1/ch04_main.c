@@ -32,20 +32,17 @@ int main(int argc, char** argv) {
 
     const crack_match_hex_t match = find_single_xor_hex(file, 60);
     fclose(file);
-    if (!match.cracked.bytes) {
-        return 1;
-    }
 
+    char* out_ascii = try_ascii(match.cracked.bytes, match.cracked.len);
     printf("    in: (%s)\n", filename);
     printf("   key: 0x%02x\n", match.cracked.key);
     printf(" score: %f\n", match.cracked.score);
     printf("  line: %d\n", match.line);
-    printf("   out: %s\n", match.cracked.bytes);
-
-    if (argc < 3)
-        printf("expect: %s\n", ch_out);
+    printf("   out: %s\n", out_ascii ? out_ascii : "");
+    if (noargs) printf("expect: %s\n", ch_out);
 
     free(match.cracked.bytes);
+    free(out_ascii);
 
     return 0;
 }
