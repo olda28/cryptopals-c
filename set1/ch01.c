@@ -47,7 +47,7 @@ char* hex(const unsigned char* bytes, size_t bytes_len) {
  */
 bytes_t unhex(const char* hex) {
     const size_t hex_len = strlen(hex);
-    if (hex_len % 2 != 0 || hex_len < 1)
+    if (hex_len % 2 != 0 || hex_len == 0)
         return NO_BYTES;
 
     const size_t buf_len = hex_len / 2;
@@ -100,7 +100,7 @@ static const char base64_alpha[] =
  *  @attention Returns a newly allocated buffer
  */
 char* base64(const unsigned char* bytes, size_t bytes_len) {
-    if (bytes_len < 1)
+    if (bytes_len == 0)
         return NULL;
     const size_t base_len = (bytes_len + 2) / 3 * 4; // == ceil(bytes_len / 3) * 4
     unsigned char* decoded = malloc(base_len);
@@ -151,6 +151,7 @@ char* base64(const unsigned char* bytes, size_t bytes_len) {
  * out = (byte[2] & 0x03) << 6 | byte[3] >> 0 */
 
 bytes_t unbase64(const char* base) {
+    if (!base || *base == '\0') return NO_BYTES;
     const size_t base_len = strlen(base);
     bytes_t out = {
         .bytes = malloc(base_len),
