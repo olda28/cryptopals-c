@@ -1,5 +1,5 @@
-#ifndef CH01_H
-#define CH01_H
+#ifndef SET1_CH01_H
+#define SET1_CH01_H
 #include <string.h>
 
 typedef enum ENCODING {

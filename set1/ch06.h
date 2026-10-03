@@ -1,5 +1,5 @@
-#ifndef CH06_H
-#define CH06_H
+#ifndef SET1_CH06_H
+#define SET1_CH06_H
 #include <stddef.h>
 #include "ch01.h"
 

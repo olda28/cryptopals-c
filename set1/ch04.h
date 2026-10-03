@@ -1,5 +1,5 @@
-#ifndef CH04_H
-#define CH04_H
+#ifndef SET1_CH04_H
+#define SET1_CH04_H
 
 #include <stdbool.h>
 
