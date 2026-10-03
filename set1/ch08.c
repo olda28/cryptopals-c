@@ -5,11 +5,6 @@
 
 #include "ch04.h"
 
-void free_find_match(find_match_t* match) {
-    free(match->bytes.bytes);
-    match->bytes.bytes = NULL;
-}
-
 static int count_duplicate_blocks(const bytes_t bytes, size_t block_len) {
     int count = 0;
     const size_t blocks_n = bytes.len/block_len;

@@ -17,16 +17,16 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Error: file '%s' not found.\n", filename);
         return 1;
     }
-    find_match_t found = find_aes128_ecb(file, HEX);
+    line_bytes_t found = find_aes128_ecb(file, HEX);
     fclose(file);
 
-    char* out_ascii = try_ascii(found.bytes.bytes, found.bytes.len);
+    char* out_ascii = try_ascii(found.bytes, found.len);
     printf("    in: (%s)\n", filename);
     printf("  line: %d\n", found.line);
     printf(" bytes: %s\n", out_ascii);
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free_find_match(&found);
+    free_line_bytes(&found);
     free(out_ascii);
     return 0;
 }
