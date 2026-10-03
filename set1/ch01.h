@@ -15,6 +15,14 @@ typedef struct {
 #define NO_BYTES ((bytes_t){ NULL, 0 })
 void free_bytes(bytes_t* f);
 
+typedef struct {
+    unsigned char* bytes;
+    size_t len;
+    int line;
+} line_bytes_t;
+#define NO_LINE_BYTES ((line_bytes_t){ NULL, 0, -1 })
+void free_line_bytes(line_bytes_t* f);
+
 char* hex(const unsigned char* bytes, size_t bytes_len);
 bytes_t unhex(const char* hex);
 

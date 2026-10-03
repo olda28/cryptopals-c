@@ -11,6 +11,12 @@ void free_bytes(bytes_t* f) {
     f->bytes = NULL;
     f->len = 0;
 }
+void free_line_bytes(line_bytes_t* f) {
+    free(f->bytes);
+    f->bytes = NULL;
+    f->len = 0;
+}
+
 
 /** @return Integer value of an ASCII hex byte */
 static int deascii_hex(const char c) {

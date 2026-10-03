@@ -48,7 +48,11 @@ file_bytes_t read_file(FILE* file, READFILE_NEWLINE newlines, ENCODING encoding)
  * @return Boolean indicating whether there is a next line.
  */
 bool decode_nextline(file_bytes_t* f) {
-    if ((size_t)(f->bytes - f->bytes_start) >= f->len) return false;
+    if ((size_t)(f->bytes - f->bytes_start) >= f->len) {
+        f->decoded.bytes = NULL;
+        f->decoded.len = 0;
+        return false;
+    }
     const char* to_return = f->bytes;
     f->bytes += strlen(f->bytes) + 1;
     f->decoded = decode(to_return, f->encoding);
