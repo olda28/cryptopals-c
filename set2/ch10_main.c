@@ -8,8 +8,7 @@
 #include "../set1/ch07.h"
 
 
-int main(int argc, char** argv) {
-    const bool noargs = argc < 4;
+int main(void) {
     const char filename[] = "./set2/ch10-data.txt";
     const bool piped = !isatty(STDOUT_FILENO);
 

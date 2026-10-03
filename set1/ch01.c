@@ -6,7 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 void free_bytes(bytes_t* f) {
+    free(f->bytes);
+    f->bytes = NULL;
+    f->len = 0;
+}
+void free_line_bytes(line_bytes_t* f) {
     free(f->bytes);
     f->bytes = NULL;
     f->len = 0;
