@@ -9,19 +9,20 @@ static const char ch_out[] = "Cooking MC's like a pound of bacon";
 
 int main(int argc, char** argv) {
     const bool noargs = argc < 2;
-    const char* in = noargs ? ch_in : argv[1];
+    const char* in_hex = noargs ? ch_in : argv[1];
 
-    bytes_t in_raw = unhex(in);
-    crack_result_t cracked = single_xor_crack(in_raw.bytes, in_raw.len);
-    char* out_ascii = try_ascii(cracked.bytes, cracked.len);
+    bytes_t in = unhex(in_hex);
+    crack_result_t cracked = single_xor_crack(in);
+    char* out_ascii = try_ascii((bytes_t){ .bytes = cracked.bytes, .len = cracked.len });
 
-    printf("    in: %s\n", in);
-    printf("   key: 0x%02x\n", cracked.key);
-    printf(" score: %f\n", cracked.score);
-    printf("   out: %s\n", out_ascii ? out_ascii : "");
+    printf(
+     "    in: %s\n"
+           "   key: 0x%02x\n"
+           " score: %f\n"
+           "   out: %s\n", in_hex, cracked.key, cracked.score, out_ascii);
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free_bytes(&in_raw);
+    free_bytes(&in);
     free_crack_result(&cracked);
     free(out_ascii);
 

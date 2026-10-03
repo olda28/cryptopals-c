@@ -86,12 +86,8 @@ crack_match_t find_single_xor(FILE* file, ENCODING file_encoding) {
     int line_nr = 1;
 
     file_bytes_t f = read_file(file, NEWLINE_REPLACE_NUL, file_encoding);
-    if (!f.bytes_start) {
-        fprintf(stderr, "Failed to decode file.");
-        goto clean;
-    }
     while (decode_nextline(&f)){
-        const crack_result_t attempt = single_xor_crack(f.decoded.bytes, f.decoded.len);
+        crack_result_t attempt = single_xor_crack(f.decoded);
 
         if (attempt.bytes) {
             if (attempt.score < solution.cracked.score) {
@@ -99,14 +95,13 @@ crack_match_t find_single_xor(FILE* file, ENCODING file_encoding) {
                 solution.cracked = attempt;
                 solution.line = line_nr;
             } else {
-                free(attempt.bytes);
+                free_crack_result(&attempt);
             }
         }
         line_nr++;
-        free(f.decoded.bytes);
+        free_bytes(&f.decoded);
     }
 
-clean:
     free(f.bytes_start);
     return solution;
 }

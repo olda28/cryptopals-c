@@ -37,15 +37,15 @@ static char ascii_hex(const uint8_t c) {
     return 0x0;
 }
 
-char* hex(const unsigned char* bytes, size_t bytes_len) {
-    if (bytes_len == 0) return NULL;
-    const size_t hex_len = bytes_len * 2;
+char* hex(bytes_t raw) {
+    if (raw.len == 0) return NULL;
+    const size_t hex_len = raw.len * 2;
 
     char* buf = malloc(hex_len + 1);
 
-    for (size_t i = 0; i < bytes_len; i++) {
-        const char msb = ascii_hex(bytes[i] >> 4);
-        const char lsb = ascii_hex(bytes[i] & 0x0F);
+    for (size_t i = 0; i < raw.len; i++) {
+        const char msb = ascii_hex(raw.bytes[i] >> 4);
+        const char lsb = ascii_hex(raw.bytes[i] & 0x0F);
         buf[i * 2] = msb;
         buf[i * 2 + 1] = lsb;
     }
@@ -107,18 +107,18 @@ static const char base64_alpha[] =
 /** @return Base64 encoded C-string
  *  @attention Returns a newly allocated buffer
  */
-char* base64(const unsigned char* bytes, size_t bytes_len) {
-    if (bytes_len == 0)
+char* base64(bytes_t raw) {
+    if (raw.len == 0)
         return NULL;
-    const size_t base_len = (bytes_len + 2) / 3 * 4; // == ceil(bytes_len / 3) * 4
+    const size_t base_len = (raw.len + 2) / 3 * 4; // == ceil(bytes_len / 3) * 4
     unsigned char* decoded = malloc(base_len);
 
-    const unsigned char* r = bytes;
+    const unsigned char* r = raw.bytes;
     unsigned char* w = decoded;
 
     uint8_t carry = 0;
-    const size_t extra_pass = (bytes_len - 1) / 3; // extra pass for each carry-only at end of input triplet
-    for (size_t i = 0; i <= bytes_len + extra_pass; i++) {
+    const size_t extra_pass = (raw.len - 1) / 3; // extra pass for each carry-only at end of input triplet
+    for (size_t i = 0; i <= raw.len + extra_pass; i++) {
         const uint8_t j = i % 4; // 0, 1, 2, 3
 
         const uint8_t carry_mask_shift = 6 - 2 * j; // 6, 4, 2, 0
@@ -198,24 +198,24 @@ bytes_t unbase64(const char* base) {
 static const char try_ascii_fail_prefix[] = "(hex) ";
 static const size_t try_ascii_fail_len = strlen(try_ascii_fail_prefix);
 
-char* try_ascii(const unsigned char* in, size_t in_len) {
-    if (in_len == 0) return NULL;
-    char* ascii = malloc(in_len + 1);
-    for (size_t i = 0; i < in_len; i++) {
-        if (isprint(in[i]) || isspace(in[i])) ascii[i] = (char)in[i];
+char* try_ascii(bytes_t raw) {
+    if (raw.len == 0) return NULL;
+    char* ascii = malloc(raw.len + 1);
+    for (size_t i = 0; i < raw.len; i++) {
+        if (isprint(raw.bytes[i]) || isspace(raw.bytes[i])) ascii[i] = (char)raw.bytes[i];
         else goto fail;
     }
-    ascii[in_len] = '\0';
+    ascii[raw.len] = '\0';
     return ascii;
 
 fail:
     free(ascii);
-    char* in_hex = hex(in, in_len);
+    char* in_hex = hex(raw);
     if (!in_hex) return NULL;
-    ascii = malloc(try_ascii_fail_len + in_len * 2 + 1);
+    ascii = malloc(try_ascii_fail_len + raw.len * 2 + 1);
     memcpy(ascii, try_ascii_fail_prefix, try_ascii_fail_len); // copy (hex) prefix
-    memcpy(ascii + try_ascii_fail_len, in_hex, in_len * 2); // copy hex
-    ascii[try_ascii_fail_len + in_len * 2] = '\0'; // NUL byte
+    memcpy(ascii + try_ascii_fail_len, in_hex, raw.len * 2); // copy hex
+    ascii[try_ascii_fail_len + raw.len * 2] = '\0'; // NUL byte
     free(in_hex); // free unused hex
     return ascii;
 }

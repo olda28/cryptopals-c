@@ -1,6 +1,7 @@
 #ifndef CH06_H
 #define CH06_H
 #include <stddef.h>
+#include "ch01.h"
 
 typedef struct {
     unsigned char* bytes;
@@ -11,6 +12,6 @@ typedef struct {
 #define REPEAT_CRACK_FAIL (repeat_crack_result_t){ NULL, 0, NULL, 0}
 void free_repeat_crack_result_t(repeat_crack_result_t* repeat_crack_result);
 
-repeat_crack_result_t repeat_xor_crack(unsigned char* in, size_t in_len);
+repeat_crack_result_t repeat_xor_crack(bytes_t in);
 
 #endif

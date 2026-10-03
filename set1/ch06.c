@@ -63,44 +63,47 @@ static int find_keylen(const unsigned char* in, int min, int max) {
     return best_keylen;
 }
 
-repeat_crack_result_t repeat_xor_crack(unsigned char* in, size_t in_len) {
-    if (in_len == 0) return REPEAT_CRACK_FAIL;
-    const int MAX_KEYLEN = (int)fmin(40, (double)in_len / 4); // we need at least four keysize blocks
-    const int keylen = find_keylen(in, 2, MAX_KEYLEN);
+repeat_crack_result_t repeat_xor_crack(bytes_t in) {
+    if (in.len == 0) return REPEAT_CRACK_FAIL;
+    const int MAX_KEYLEN = (int)fmin(40, (double)in.len / 4); // we need at least four keysize blocks
+    const int keylen = find_keylen(in.bytes, 2, MAX_KEYLEN);
 
     bytes_t* columns = malloc(keylen * sizeof(bytes_t));
     for (int i = 0; i < keylen; i++) {
-        columns[i] = (bytes_t){ .bytes = malloc(in_len / keylen + 1), .len = 0 };
+        columns[i] = (bytes_t){ .bytes = malloc(in.len / keylen + 1), .len = 0 };
     }
 
     // Transpose blocks
-    for (int i = 0; (size_t)i < in_len; i++) {
+    for (int i = 0; (size_t)i < in.len; i++) {
         const int j = i % keylen;
         bytes_t* col = &columns[j];
-        col->bytes[col->len++] = in[i];
+        col->bytes[col->len++] = in.bytes[i];
     }
 
     // Attempt Single-XOR crack
-    unsigned char* key = malloc(keylen);
+    bytes_t key = {
+        .bytes = malloc(keylen),
+        .len = keylen
+    };
     for (int i = 0; i < keylen; i++) {
-        const bytes_t* col = &columns[i];
-        const crack_result_t cracked = single_xor_crack(col->bytes, col->len);
+        bytes_t col = columns[i];
+        crack_result_t cracked = single_xor_crack(col);
         if (!cracked.bytes)
-            key[i] = '?';
+            key.bytes[i] = '?';
         else
-            key[i] = cracked.key;
-        free(cracked.bytes);
-        free(col->bytes);
+            key.bytes[i] = cracked.key;
+        free_crack_result(&cracked);
+        free_bytes(&col);
     }
     free(columns);
 
     // Use the assembled key
-    const bytes_t xor = repeat_xor(in, in_len, key, keylen);
+    const bytes_t xor = repeat_xor(in,  key);
 
     return (repeat_crack_result_t){
         .bytes = xor.bytes,
         .len = xor.len,
-        .key = key,
+        .key = key.bytes,
         .key_len = keylen
     };
 }

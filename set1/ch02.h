@@ -3,6 +3,6 @@
 
 #include "ch01.h"
 
-bytes_t fixed_xor(const unsigned char* a, size_t a_len, const unsigned char* b, size_t b_len);
+bytes_t fixed_xor(bytes_t a, bytes_t b);
 
 #endif

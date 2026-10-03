@@ -23,13 +23,14 @@ int main(int argc, char** argv) {
     file_bytes_t f = read_file(file, NEWLINE_STRIP, BASE64);
     decode_full(&f);
 
-    repeat_crack_result_t crack = repeat_xor_crack(f.decoded.bytes, f.decoded.len);
+    repeat_crack_result_t crack = repeat_xor_crack(f.decoded);
 
-    char* key_ascii = try_ascii(crack.key, crack.key_len);
-    char* out_ascii = try_ascii(crack.bytes, crack.len);
-    fprintf(stderr, "    in: (%s)\n", filename);
-    fprintf(stderr, "   key: %s\n", key_ascii);
-    fprintf(stderr, "   out: %s", piped ? "(pipe)\n" : "");
+    char* key_ascii = try_ascii((bytes_t){ crack.key, crack.key_len });
+    char* out_ascii = try_ascii((bytes_t){ crack.bytes, crack.len });
+    fprintf(stderr, "    in: (%s)\n"
+                          "   key: %s\n"
+                          "   out: %s",
+                          filename, key_ascii, piped ? "(pipe)\n" : "");
     printf("%s", out_ascii);
     fprintf(stderr, "expect: %s\n", ch_out);
 

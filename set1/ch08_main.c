@@ -20,10 +20,11 @@ int main(int argc, char** argv) {
     line_bytes_t found = find_aes128_ecb(file, HEX);
     fclose(file);
 
-    char* out_ascii = try_ascii(found.bytes, found.len);
-    printf("    in: (%s)\n", filename);
-    printf("  line: %d\n", found.line);
-    printf(" bytes: %s\n", out_ascii);
+    char* out_ascii = try_ascii((bytes_t) { found.bytes, found.len });
+    printf("    in: (%s)\n"
+                 "  line: %d\n"
+                 " bytes: %s\n",
+                 filename, found.line, out_ascii);
     if (noargs) printf("expect: %s\n", ch_out);
 
     free_line_bytes(&found);

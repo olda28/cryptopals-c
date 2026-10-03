@@ -18,16 +18,16 @@ int main(int argc, char** argv) {
     crack_match_t match = find_single_xor(file, HEX);
     fclose(file);
 
-    char* out_ascii = try_ascii(match.cracked.bytes, match.cracked.len);
-    printf("    in: (%s)\n", filename);
-    printf("   key: 0x%02x\n", match.cracked.key);
-    printf(" score: %f\n", match.cracked.score);
-    printf("  line: %d\n", match.line);
-    printf("   out: %s\n", out_ascii ? out_ascii : "");
+    char* out_ascii = try_ascii((bytes_t){ match.cracked.bytes, match.cracked.len });
+    printf("    in: (%s)\n"
+           "   key: 0x%02x\n"
+           " score: %f\n"
+           "  line: %d\n"
+           "   out: %s\n",
+           filename, match.cracked.key, match.cracked.score, match.line, out_ascii);
     if (noargs) printf("expect: %s\n", ch_out);
 
     free_crack_match(&match);
     free(out_ascii);
-
     return 0;
 }

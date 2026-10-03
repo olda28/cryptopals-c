@@ -3,16 +3,16 @@
 #include <stdlib.h>
 #include "ch01.h"
 
-bytes_t repeat_xor(const unsigned char* in, size_t in_len, const unsigned char* key, size_t key_len) {
-    if (in_len == 0) return NO_BYTES;
+bytes_t repeat_xor(const bytes_t in, const bytes_t key) {
+    if (in.len == 0) return NO_BYTES;
     const bytes_t out = {
-        .bytes = malloc(in_len),
-        .len = in_len
+        .bytes = malloc(in.len),
+        .len = in.len
     };
 
-    for (size_t i = 0; i < in_len; i++) {
-        const int j = i % key_len;
-        out.bytes[i] = in[i] ^ key[j];
+    for (size_t i = 0; i < in.len; i++) {
+        const int j = i % key.len;
+        out.bytes[i] = in.bytes[i] ^ key.bytes[j];
     }
     return out;
 }

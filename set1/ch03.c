@@ -745,11 +745,11 @@ static const double bigram_freq[26][26] = {
     }
 };
 static const double bigram_low = -11.51293;
-static double bigram_score(const unsigned char* in, size_t in_len) {
+static double bigram_score(const bytes_t in) {
     double score = 0.0;
-    for (size_t i = 0; i < in_len - 1; i++) {
-        const unsigned char a = tolower(in[i]);
-        const unsigned char b = tolower(in[i + 1]);
+    for (size_t i = 0; i < in.len - 1; i++) {
+        const unsigned char a = tolower(in.bytes[i]);
+        const unsigned char b = tolower(in.bytes[i + 1]);
         if (!isalpha(a) || !isalpha(b)) {
             score -= bigram_low;
             continue;
@@ -757,7 +757,7 @@ static double bigram_score(const unsigned char* in, size_t in_len) {
         score -= log(bigram_freq[a - 'a'][b - 'a']);
     }
 
-    const double normalized = score / (double)(in_len - 1);
+    const double normalized = score / (double)(in.len - 1);
     return normalized;
 }
 
@@ -790,10 +790,10 @@ static const double english_freq[] = {
     0.0006142,
     0.18
 };
-static double chi_score(const unsigned char* in, size_t in_len) {
+static double chi_score(const bytes_t in) {
     double score = 0.0;
-    for (size_t i = 0; i < in_len; i++) {
-        const unsigned char c = tolower(in[i]);
+    for (size_t i = 0; i < in.len; i++) {
+        const unsigned char c = tolower(in.bytes[i]);
         if (isalpha(c))
             score -= log(english_freq[c - 'a']);
         else if (c == ' ')
@@ -805,30 +805,33 @@ static double chi_score(const unsigned char* in, size_t in_len) {
     return score;
 }
 
-bytes_t single_xor(const unsigned char* in, size_t in_len, const unsigned char key) {
-    unsigned char* key_arr = malloc(in_len);
-    memset(key_arr, key, in_len);
+bytes_t single_xor(const bytes_t in, const unsigned char key) {
+    bytes_t key_arr = {
+        .bytes = malloc(in.len),
+        .len = in.len
+    };
+    memset(key_arr.bytes, key, in.len);
 
-    const bytes_t xor = fixed_xor(in, in_len, key_arr, in_len);
-    free(key_arr);
+    const bytes_t xor = fixed_xor(in, key_arr);
+    free_bytes(&key_arr);
 
     return xor;
 }
 
 
-crack_result_t single_xor_crack(const unsigned char* in, size_t in_len) {
-    if (in_len == 0) return CRACK_FAIL;
+crack_result_t single_xor_crack(const bytes_t in) {
+    if (in.len == 0) return CRACK_FAIL;
     crack_result_t solution = {
         .bytes = NULL,
-        .len = in_len,
+        .len = in.len,
         .key = 0x00,
         .score = DBL_MAX // English text is close to 120
     };
 
     for (unsigned int i = 0x00; i <= 0xff; i++) {
-        const bytes_t candidate = single_xor(in, in_len, i);
+        const bytes_t candidate = single_xor(in, i);
 
-        const double chi = chi_score(candidate.bytes, candidate.len);
+        const double chi = chi_score(candidate);
         const double score = chi;
 
         if (score < solution.score) {

@@ -9,23 +9,25 @@ static const char ch_out[] = "746865206b696420646f6e277420706c6179";
 
 int main(int argc, char** argv) {
     const bool noargs = argc < 3;
-    const char* a = noargs ? ch_a : argv[1];
-    const char* b = noargs ? ch_b : argv[2];
+    const char* a_hex = noargs ? ch_a : argv[1];
+    const char* b_hex = noargs ? ch_b : argv[2];
 
-    bytes_t a_raw = unhex(a);
-    bytes_t b_raw = unhex(b);
+    bytes_t a = unhex(a_hex);
+    bytes_t b = unhex(b_hex);
 
-    bytes_t out = fixed_xor(a_raw.bytes, a_raw.len, b_raw.bytes, b_raw.len);
+    bytes_t out = fixed_xor(a, b);
 
-    char* out_hex = hex(out.bytes, out.len);
+    char* out_hex = hex(out);
 
-    printf("  a: %s\n", a);
-    printf("  b: %s\n", b);
-    printf("out: %s\n", out_hex);
+    printf(
+    "  a: %s\n"
+          "  b: %s\n"
+          "out: %s\n",
+          a_hex, b_hex, out_hex);
     if (noargs) printf("exp: %s\n", ch_out);
 
-    free_bytes(&a_raw);
-    free_bytes(&b_raw);
+    free_bytes(&a);
+    free_bytes(&b);
     free_bytes(&out);
     free(out_hex);
     return out_hex ? 0 : 1;

@@ -14,15 +14,17 @@ int main(int argc, char** argv) {
     const char* key = noargs ? ch_key : argv[1];
     const char* in = noargs ? ch_in : argv[2];
 
-    bytes_t xor = repeat_xor((unsigned char*)in, strlen(in), (unsigned char*)key, strlen(key));
+    bytes_t out = repeat_xor((bytes_t){ (unsigned char*) in, strlen(in) },
+        (bytes_t){ (unsigned char*)key, strlen(key) });
 
-    char* hexx = hex(xor.bytes, xor.len);
-    printf("    in: %s\n", in);
-    printf("   key: %s\n", key);
-    printf("   out: %s\n", hexx);
+    char* out_hex = hex(out);
+    printf("    in: %s\n"
+                 "   key: %s\n"
+                 "   out: %s\n",
+                 in, key, out_hex);
     if (noargs) printf("expect: %s\n", ch_out);
 
-    free_bytes(&xor);
-    free(hexx);
+    free_bytes(&out);
+    free(out_hex);
     return 0;
 }

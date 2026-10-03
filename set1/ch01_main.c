@@ -13,10 +13,12 @@ int main(int argc, char** argv) {
     const char* hex = noargs ? ch_in : argv[1];
 
     bytes_t raw = unhex(hex);
-    char* base = base64(raw.bytes, raw.len);
+    char* base = base64(raw);
 
-    printf("    in: %s\n", hex);
-    printf("   out: %s\n", base);
+    printf(
+    "    in: %s\n"
+          "   out: %s\n",
+          hex, base);
     if (noargs) printf("expect: %s\n", ch_out);
 
     free_bytes(&raw);

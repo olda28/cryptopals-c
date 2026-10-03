@@ -32,10 +32,11 @@ int main(int argc, char** argv) {
 
     bytes_t decrypted = aes128_ecb_decrypt(f.decoded, key);
 
-    char* out_ascii = try_ascii(decrypted.bytes, decrypted.len);
-    fprintf(stderr, "    in: (%s)\n", filename);
-    fprintf(stderr, "   key: %s\n", (char*)key.bytes);
-    fprintf(stderr, "   out: %s", piped ? "(pipe)\n" : "");
+    char* out_ascii = try_ascii(decrypted);
+    fprintf(stderr, "    in: (%s)\n"
+                          "   key: %s\n"
+                          "   out: %s",
+                          filename, (char*)key.bytes, piped ? "(pipe)\n" : "");
     printf("%s", out_ascii);
     fprintf(stderr, "expect: %s\n", ch_out);
 
