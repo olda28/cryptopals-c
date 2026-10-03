@@ -57,7 +57,7 @@ $(BUILD)/%.o: %.c
 # bin/set1-ch01 -> set1/ch01_main.c
 $(BIN)/%: $$(subst -,/,$$*)_main.c $(LIB)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $< -L$(BUILD) -lcryptopals -lm -o $@
+	$(CC) $(CFLAGS) $< -L$(BUILD) -lcryptopals -lm -lssl -lcrypto -o $@
 
 
 # ============================================================
