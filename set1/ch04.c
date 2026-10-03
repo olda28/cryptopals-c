@@ -13,6 +13,10 @@ void free_crack_match(crack_match_t* crack_match) {
  * @warning The returned value's .bytes_start must be freed.
  */
 file_bytes_t read_file(FILE* file, READFILE_NEWLINE newlines, ENCODING encoding) {
+    if (!file) {
+        fprintf(stderr, "Error opening file.");
+        return NO_FILE_BYTES;
+    }
     size_t buf_len = 8192;
     char* buf = malloc(buf_len);
     char* w = buf;

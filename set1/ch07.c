@@ -30,6 +30,7 @@ bytes_t aes128_ecb(bytes_t in, bytes_t key, bool encrypt) {
     // Initialize cipher and validate lengths
     if (!EVP_CipherInit_ex2(ctx, EVP_aes_128_ecb(), NULL, NULL, encrypt, NULL)) return openssl_error(ctx, NULL);
     if ((size_t)EVP_CIPHER_CTX_get_key_length(ctx) != key.len) return openssl_error(ctx, "Key must be 16 bytes.");
+    if (!EVP_CIPHER_CTX_set_padding(ctx, 0)) return openssl_error(ctx, "Failed to disable padding");
     if (!EVP_CipherInit_ex2(ctx, NULL, key.bytes, NULL, encrypt, NULL)) return openssl_error(ctx, NULL);
     // Encrypt
     bytes_t out = {
@@ -38,8 +39,8 @@ bytes_t aes128_ecb(bytes_t in, bytes_t key, bool encrypt) {
     };
     int update_len;
     int final_len;
-    if (!EVP_CipherUpdate(ctx, out.bytes, &update_len, in.bytes, (int)in.len)) openssl_error(ctx, NULL);
-    if (!EVP_CipherFinal_ex(ctx, out.bytes+update_len, &final_len)) openssl_error(ctx, NULL);
+    if (!EVP_CipherUpdate(ctx, out.bytes, &update_len, in.bytes, (int)in.len)) return openssl_error(ctx, NULL);
+    if (!EVP_CipherFinal_ex(ctx, out.bytes+update_len, &final_len)) return openssl_error(ctx, NULL);
     EVP_CIPHER_CTX_free(ctx);
 
     out.len = (size_t)update_len + (size_t)final_len;

@@ -35,10 +35,10 @@ int main(int argc, char** argv) {
     char* out_ascii = try_ascii(decrypted);
     fprintf(stderr, "    in: (%s)\n"
                           "   key: %s\n"
-                          "   out: %s",
-                          filename, (char*)key.bytes, piped ? "(pipe)\n" : "");
+                          "   out: %s"
+                          "expect: %s",
+                          filename, (char*)key.bytes, piped ? "(pipe)\n" : "", noargs ? ch_out: "N/A");
     printf("%s", out_ascii);
-    fprintf(stderr, "expect: %s\n", ch_out);
 
     fclose(file);
     close_file(&f);
