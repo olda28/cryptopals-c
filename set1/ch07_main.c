@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     file_bytes_t f = read_file(file, NEWLINE_STRIP, BASE64);
     decode_full(&f);
 
-    bytes_t decrypted = aes128_ecb_decrypt(f.decoded, key);
+    bytes_t decrypted = aes128_ecb(f.decoded, key, false);
 
     char* out_ascii = try_ascii(decrypted);
     fprintf(stderr, "    in: (%s)\n"
