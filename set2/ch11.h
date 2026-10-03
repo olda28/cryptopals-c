@@ -4,6 +4,6 @@
 
 #include "../set1/ch01.h"
 
-bytes_t aes128_random(bytes_t in, bool debug);
+bytes_t aes128_random_mode(bytes_t in, bool debug);
 
 #endif

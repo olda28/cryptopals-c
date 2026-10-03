@@ -20,7 +20,7 @@ static bytes_t repeat_char(unsigned char c, int len) {
 int main(void) {
     bytes_t in = repeat_char('X', 48);
 
-    bytes_t random = aes128_random(in, true);
+    bytes_t random = aes128_random_mode(in, true);
     const bool ecb = !memcmp(random.bytes+16, random.bytes+32, 16);
     printf("Detected: %s\n", ecb ? "ECB" : "CBC");
 

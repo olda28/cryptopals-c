@@ -24,7 +24,7 @@ static int randint(int min, int max) {
     return rand() % (max - min + 1) + min;
 }
 
-bytes_t aes128_random(const bytes_t in, bool debug) {
+bytes_t aes128_random_mode(const bytes_t in, bool debug) {
     srand(time(NULL));
     const bool cbc = rand() % 2; // 0 = ecb, 1 = cbc
     if (debug) printf("Encrypting with %s\n", cbc ? "CBC" : "ECB");
