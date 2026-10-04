@@ -11,7 +11,7 @@
 static bytes_t key = NO_BYTES;
 static bytes_t secret = NO_BYTES;
 
-bytes_t aes128_ecb_crackme(const bytes_t in) {
+bytes_t aes128_ecb_oracle_append(const bytes_t in) {
     if (key.len == 0) key = random_bytes(16);
     if (secret.len == 0) secret = unbase64("Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK");
     bytes_t secret_in = {
@@ -27,12 +27,12 @@ bytes_t aes128_ecb_crackme(const bytes_t in) {
     return out;
 }
 
-void aes128_ecb_crackme_cleanup(void) {
+void ch12_cleanup(void) {
     free_bytes(&key);
     free_bytes(&secret);
 }
 
-bytes_t aes128_ecb_crack(bytes_t (*f)(bytes_t)) {
+bytes_t aes128_ecb_crack_append(bytes_t (*f)(bytes_t)) {
     // 1. Detect block size (and secret length)
     size_t secret_max_len = 0;
     int blocksize = 0;
