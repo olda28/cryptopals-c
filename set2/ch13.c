@@ -10,7 +10,7 @@
 #include "../set1/ch07.h"
 
 const char* kv_get(const kv_map_t* map, const char *key) {
-    for (int i = 0; i < map->len; i++) {
+    for (size_t i = 0; i < map->len; i++) {
         if (!strcmp(map->pairs[i].key, key)) return map->pairs[i].value;
     }
     return NULL;
@@ -19,12 +19,12 @@ kv_map_t kv_parse(const char* encoded) {
     const size_t encoded_len = strlen(encoded);
     kv_map_t out = { .len = 1 };
 
-    for (int i = 0; i < encoded_len; i++) {
+    for (size_t i = 0; i < encoded_len; i++) {
         if (encoded[i] == '&') out.len++;
     }
 
     out.pairs = (kv_pair_t*) malloc(out.len * sizeof(kv_pair_t));
-    for (int i = 0; i < out.len; i++) {
+    for (size_t i = 0; i < out.len; i++) {
         out.pairs[i] = (kv_pair_t){ .key = malloc(50), .value = malloc(50) };
         int key_idx = 0;
         int value_idx = 0;
@@ -48,7 +48,7 @@ kv_map_t kv_parse(const char* encoded) {
 char* kv_encode(const kv_map_t* map) {
     char* encoded = malloc(100);
     char* w = encoded;
-    for (int i = 0; i < map->len; i++) {
+    for (size_t i = 0; i < map->len; i++) {
         const char* key = map->pairs[i].key;
         const char* value = map->pairs[i].value;
         const size_t key_len = strlen(key);
@@ -65,7 +65,7 @@ char* kv_encode(const kv_map_t* map) {
     return encoded;
 }
 void kv_free(kv_map_t* map){
-    for (int i = 0; i < map->len; i++) {
+    for (size_t i = 0; i < map->len; i++) {
         free(map->pairs[i].key);
         free(map->pairs[i].value);
     }
