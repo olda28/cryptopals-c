@@ -17,11 +17,6 @@ void free_line_bytes(line_bytes_t* f) {
     f->bytes = NULL;
     f->len = 0;
 }
-void free_line_bytes(line_bytes_t* f) {
-    free(f->bytes);
-    f->bytes = NULL;
-    f->len = 0;
-}
 
 
 /** @return Integer value of an ASCII hex byte */
@@ -236,4 +231,11 @@ bytes_t decode(const char* in, ENCODING encoding) {
         return unhex(in);
     }
     return NO_BYTES;
+}
+
+char* append_nul(bytes_t in) {
+    char* out = malloc(in.len + 1);
+    memcpy(out, in.bytes, in.len);
+    out[in.len] = '\0';
+    return out;
 }

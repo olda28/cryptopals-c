@@ -51,6 +51,12 @@ bytes_t aes128_random_mode(const bytes_t in) {
     return encrypted;
 }
 
+void repeat_char_into(unsigned char* dest, unsigned char c, int len) {
+    for (int i = 0; i < len; i++) {
+        dest[i] = c;
+    }
+}
+
 bytes_t repeat_char(unsigned char c, int len) {
     bytes_t out = {
         .bytes = malloc(len),

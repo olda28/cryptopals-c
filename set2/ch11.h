@@ -5,6 +5,7 @@
 #include "../set1/ch01.h"
 
 bytes_t repeat_char(unsigned char c, int len);
+void repeat_char_into(unsigned char* dest, unsigned char c, int len);
 bytes_t random_bytes(size_t len);
 int randint(int min, int max);
 

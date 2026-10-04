@@ -23,6 +23,8 @@ typedef struct {
 #define NO_LINE_BYTES ((line_bytes_t){ NULL, 0, -1 })
 void free_line_bytes(line_bytes_t* f);
 
+char* append_nul(bytes_t in);
+
 char* hex(bytes_t raw);
 bytes_t unhex(const char* hex);
 
