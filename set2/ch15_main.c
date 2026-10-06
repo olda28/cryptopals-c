@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
 
     int count;
     if ((count = pkcs7_strip(&in_bytes, 16)) == 0) {
+        free(in_ascii);
+        free_bytes(&in_bytes);
         fprintf(stderr, "pkcs7_strip: failed to strip valid padding\n");
         return 1;
     }
@@ -28,5 +30,8 @@ int main(int argc, char** argv) {
         "out: %s\n",
         in_ascii, count, stripped_ascii);
 
+    free_bytes(&in_bytes);
+    free(in_ascii);
     free(stripped_ascii);
+    return 0;
 }
