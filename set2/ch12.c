@@ -34,7 +34,7 @@ void ch12_cleanup(void) {
 
 bytes_t aes128_ecb_crack_append(bytes_t (*f)(bytes_t)) {
     // 1. Detect block size (and secret length)
-    size_t secret_max_len = 0;
+    size_t secret_len = 0;
     int last_len = 0;
     int blocksize = 0;
     for (size_t i = 1; i < 34; i++) {
@@ -45,16 +45,15 @@ bytes_t aes128_ecb_crack_append(bytes_t (*f)(bytes_t)) {
 
         if (last_len && enc.len - last_len > 1) { // big jump (dipped into next block)
             blocksize = enc.len - last_len; // how much it jumps by
-            secret_max_len = last_len - i; // how many "our" bytes were needed to reach before-padding of last blocksize block
+            secret_len = last_len - i; // how many "our" bytes were needed to reach before-padding of last blocksize block
             break;
         }
         last_len = enc.len;
     }
     printf("blocksize: %d\n", blocksize);
-    printf("secret len: %lu\n", secret_max_len);
 
     if (blocksize != 16) return NO_BYTES; // Support only AES128 at this time
-    if (secret_max_len == 0) return NO_BYTES; // this really shouldn't be possible
+    if (secret_len == 0) return NO_BYTES; // this really shouldn't be possible
 
     // 2. Detect ECB
     const bool ecb = is_aes128_ecb(f, blocksize);
@@ -62,38 +61,39 @@ bytes_t aes128_ecb_crack_append(bytes_t (*f)(bytes_t)) {
 
     // 3. Attack!
     bytes_t cracked = {
-        .bytes = malloc(secret_max_len),
+        .bytes = malloc(secret_len),
         .len = 0
     };
     unsigned char** dict = malloc(96 * sizeof(unsigned char*));
     for (int i = 0; i < 96; i++) { dict[i] = malloc(blocksize * sizeof(unsigned char)); }
-    const int end = (int)ceil((double)secret_max_len / blocksize)*blocksize;
 
-    for (size_t n = 1; n <= secret_max_len; n++) {
+    const int end = (int)ceil((double)secret_len / blocksize)*blocksize;
+
+    for (size_t n = 1; n <= secret_len; n++) {
+        const int payload_len = end - n;
+        const int target_offset = end - blocksize;
         // 3.1. Populate dictionary
         for (int i = 0; i < 96; i++) {
             bytes_t in = { .bytes = malloc(end), .len = end };
-            bytes_t stub = repeat_char('A', end-n);
-            memcpy(in.bytes, stub.bytes, stub.len);
-            memcpy(in.bytes+stub.len, cracked.bytes, cracked.len);
-            free_bytes(&stub);
+            repeat_char_into(in.bytes, 'A', payload_len);
+            memcpy(in.bytes + payload_len, cracked.bytes, cracked.len);
 
-            in.bytes[end-1] = i == 0 ? '\n' : i + 0x1F;
+            in.bytes[in.len - 1] = i == 0 ? '\n' : i + 0x1F;
             bytes_t enc = (*f)(in);
 
-            memcpy(dict[i], enc.bytes + end - blocksize, blocksize);
+            memcpy(dict[i], enc.bytes + target_offset, blocksize);
             free_bytes(&in);
             free_bytes(&enc);
         }
 
         // 3.2. Get actual secret byte
-        bytes_t in = repeat_char('A', end-n);
+        bytes_t in = repeat_char('A', payload_len);
         bytes_t enc = (*f)(in);
 
         // 3.3. Compare and find
         bool found = false;
         for (int i = 0; i < 94; i++) {
-            found = !memcmp(dict[i], enc.bytes + end - blocksize, blocksize);
+            found = !memcmp(dict[i], enc.bytes + target_offset, blocksize);
             if (found) {
                 cracked.bytes[cracked.len++] = i == 0 ? '\n' : i + 0x1F;
                 break;
